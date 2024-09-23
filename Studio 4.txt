@@ -1,0 +1,82 @@
+### Required Exercises
+
+1. Names of People:
+
+	Atiqullah Asghari
+
+
+2. Working Code for 'open.c':
+   
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <fcntl.h>
+   #include <unistd.h>
+
+   int main(int argc, char *argv[]) {
+       if (argc != 2) {
+           fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
+           return 1;
+       }
+
+       int fd = open(argv[1], O_RDONLY);
+       if (fd == -1) {
+           perror("Error opening file");
+           return 1;
+       }
+
+       char buffer[1024];
+       ssize_t bytesRead;
+       while ((bytesRead = read(fd, buffer, sizeof(buffer) - 1)) > 0) {
+           buffer[bytesRead] = '\0'; // Null-terminate the buffer
+           printf("%s", buffer);
+       }
+
+       if (bytesRead == -1) {
+           perror("Error reading file");
+           close(fd);
+           return 1;
+       }
+
+       close(fd);
+       return 0;
+   }
+   
+
+3. What Happens When Specifying a Non-Existent File:  
+   When the argument specifies a file that doesn't exist, the 'open()' function fails and returns -1. Consequently, the 'perror()' function will output "Error opening file: No such file or directory".
+
+4. Testing with 'perm.txt':  
+   After creating 'perm.txt' and executing 'chmod -rw perm.txt', attempting to run the program results in an error because the file is now inaccessible. The output will be "Error opening file: Permission denied".
+
+5. Return Value of 'open()' on Error:  
+   The value returned by 'open()' in the event of an error is -1.
+
+6. Conditional to Check Return Value:  
+  
+   if (fd == -1)
+   
+
+7. Call to 'perror()':  
+
+   perror("Error opening file");
+  
+
+8. Exit Gracefully on Error:  
+   (This answer will be left blank as requested)
+
+9. What Happens When Specifying a Non-Existent File:  
+   As mentioned, the output will indicate that the file does not exist: "Error opening file: No such file or directory".
+
+10. What Happens with 'perm.txt':  
+    The output will indicate a permission issue: "Error opening file: Permission denied".
+
+11. Return Values and 'errno' for Functions:
+    - open(): Returns -1 on error and sets 'errno'.
+    - close(): Returns -1 on error and sets 'errno'.
+    - read(): Returns -1 on error and sets 'errno'.
+    - write(): Returns -1 on error and sets 'errno'.
+    - printf(): Returns a non-negative value on success; does not set 'errno'.
+
+12. Reasons Why Error Checking Simplifies Software Development:
+    - Easier Debugging: By checking return values and handling errors immediately, developers can quickly identify and resolve issues, improving overall code quality.
+    - Increased Robustness: Programs that handle errors gracefully can recover from unexpected conditions rather than crashing, providing a better user experience and maintaining system stability.
